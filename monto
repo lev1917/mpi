@@ -1,0 +1,44 @@
+#include <iostream>
+#include "mpi.h"
+#include <cstdlib>
+#include <ctime>
+int check(double x,double y){
+    if((x*x+y*y)<=1){
+        return 1;}
+    else{return 0;}}
+int Pi(double a=0,double b=0){
+int N;
+    double M=100000;
+    double Ra=RAND_MAX;
+    srand(time(NULL));
+    for(int i;i<100000;i++)
+    {
+        double x = (rand()/Ra)-1;
+        double y =(  (rand()/Ra)) -1;
+
+        if(check(x,y)==1){N++;}}
+
+return N;}
+int main(int  args, char  *argv[])
+{
+MPI_Init(&args, &argv);
+    int Sum;
+    int D;
+
+   MPI_Comm_size(MPI_COMM_WORLD,  &D);
+
+    Sum=Pi();
+
+    int current;
+    MPI_Comm_rank(MPI_COMM_WORLD , &current);
+
+    int  SUMM;
+MPI_Reduce(&Sum,&SUMM,1,MPI_DOUBLE,MPI_SUM,0,MPI_COMM_WORLD);
+if (current==0){
+    std::cout<<4*double(SUMM)/(double(D)*100000);}
+    MPI_Status status;
+
+
+    MPI_Finalize();
+
+    return 0;}
